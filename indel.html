@@ -1,0 +1,1215 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CalmMind - Salud Mental y Estrés Académico</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f8fafc;
+        }
+        /* Animaciones para el ejercicio de respiración */
+        @keyframes breatheAnimation {
+            0%, 100% { transform: scale(1); background-color: #a7f3d0; }
+            25% { transform: scale(1.6); background-color: #6ee7b7; }
+            50% { transform: scale(1.6); background-color: #34d399; }
+            75% { transform: scale(1); background-color: #6ee7b7; }
+        }
+        .breathe-inhale {
+            transform: scale(1.6);
+            background-color: #34d399;
+            box-shadow: 0 0 30px rgba(52, 211, 153, 0.6);
+        }
+        .breathe-hold {
+            transform: scale(1.6);
+            background-color: #60a5fa;
+            box-shadow: 0 0 30px rgba(96, 165, 250, 0.6);
+        }
+        .breathe-exhale {
+            transform: scale(1);
+            background-color: #f87171;
+            box-shadow: 0 0 30px rgba(248, 113, 113, 0.6);
+        }
+        .breathe-rest {
+            transform: scale(1);
+            background-color: #fbbf24;
+            box-shadow: 0 0 30px rgba(251, 191, 36, 0.6);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col transition-colors duration-300">
+
+    <nav class="bg-white border-b border-slate-100 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center space-x-3">
+                    <span class="p-2 bg-indigo-50 text-indigo-600 rounded-xl">
+                        <i class="fa-solid fa-brain-circuit text-2xl"></i>
+                    </span>
+                    <span class="text-xl font-bold text-slate-800 tracking-tight">Calm<span class="text-indigo-600">Mind</span></span>
+                </div>
+                <div class="hidden md:flex items-center space-x-1">
+                    <button onclick="switchTab('dashboard')" class="tab-btn px-4 py-2 rounded-lg text-sm font-semibold transition-all bg-indigo-50 text-indigo-600" id="btn-dashboard">
+                        <i class="fa-solid fa-gauge-high mr-2"></i>Panel General
+                    </button>
+                    <button onclick="switchTab('assessment')" class="tab-btn px-4 py-2 rounded-lg text-sm font-semibold transition-all text-slate-600 hover:text-indigo-600 hover:bg-indigo-50/50" id="btn-assessment">
+                        <i class="fa-solid fa-square-poll-horizontal mr-2"></i>Test de Estrés
+                    </button>
+                    <button onclick="switchTab('reliefe')" class="tab-btn px-4 py-2 rounded-lg text-sm font-semibold transition-all text-slate-600 hover:text-indigo-600 hover:bg-indigo-50/50" id="btn-reliefe">
+                        <i class="fa-solid fa-spa mr-2"></i>Alivio Inmediato
+                    </button>
+                    <button onclick="switchTab('pomodoro')" class="tab-btn px-4 py-2 rounded-lg text-sm font-semibold transition-all text-slate-600 hover:text-indigo-600 hover:bg-indigo-50/50" id="btn-pomodoro">
+                        <i class="fa-solid fa-clock mr-2"></i>Estudio Pomodoro
+                    </button>
+                    <button onclick="switchTab('journal')" class="tab-btn px-4 py-2 rounded-lg text-sm font-semibold transition-all text-slate-600 hover:text-indigo-600 hover:bg-indigo-50/50" id="btn-journal">
+                        <i class="fa-solid fa-feather-pointed mr-2"></i>Diario y Reframing
+                    </button>
+                </div>
+                <!-- Botón móvil de menú -->
+                <div class="flex items-center md:hidden">
+                    <button onclick="toggleMobileMenu()" class="p-2 rounded-lg text-slate-600 hover:bg-slate-100">
+                        <i class="fa-solid fa-bars text-xl" id="menu-icon"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Menú Móvil desplegable -->
+        <div id="mobile-menu" class="hidden md:hidden border-t border-slate-100 bg-white px-4 py-3 space-y-1">
+            <button onclick="switchTab('dashboard'); toggleMobileMenu()" class="w-full text-left px-3 py-2 rounded-lg text-sm font-semibold block bg-indigo-50 text-indigo-600" id="mob-btn-dashboard">Panel General</button>
+            <button onclick="switchTab('assessment'); toggleMobileMenu()" class="w-full text-left px-3 py-2 rounded-lg text-sm font-semibold block text-slate-600 hover:bg-slate-50" id="mob-btn-assessment">Test de Estrés</button>
+            <button onclick="switchTab('reliefe'); toggleMobileMenu()" class="w-full text-left px-3 py-2 rounded-lg text-sm font-semibold block text-slate-600 hover:bg-slate-50" id="mob-btn-reliefe">Alivio Inmediato</button>
+            <button onclick="switchTab('pomodoro'); toggleMobileMenu()" class="w-full text-left px-3 py-2 rounded-lg text-sm font-semibold block text-slate-600 hover:bg-slate-50" id="mob-btn-pomodoro">Estudio Pomodoro</button>
+            <button onclick="switchTab('journal'); toggleMobileMenu()" class="w-full text-left px-3 py-2 rounded-lg text-sm font-semibold block text-slate-600 hover:bg-slate-50" id="mob-btn-journal">Diario y Reframing</button>
+        </div>
+    </nav>
+
+    <!-- Contenedor de Notificaciones Toast -->
+    <div id="toast" class="fixed top-20 right-4 z-50 transform translate-x-full transition-transform duration-300 ease-out bg-slate-900 text-white px-4 py-3 rounded-xl shadow-xl flex items-center space-x-3 max-w-sm">
+        <span id="toast-icon" class="text-emerald-400"><i class="fa-solid fa-circle-check"></i></span>
+        <p id="toast-message" class="text-sm font-medium"></p>
+    </div>
+
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <!-- ================= PANEL GENERAL (DASHBOARD) ================= -->
+        <section id="view-dashboard" class="space-y-8 animate-fade">
+            <!-- Banner de Bienvenida -->
+            <div class="bg-gradient-to-r from-indigo-900 via-indigo-800 to-slate-900 rounded-3xl p-6 md:p-10 text-white relative overflow-hidden shadow-xl">
+                <div class="relative z-10 max-w-xl">
+                    <span class="bg-indigo-500/30 text-indigo-200 px-3 py-1 rounded-full text-xs font-semibold tracking-wider uppercase mb-4 inline-block">Portal Universitario & Escolar</span>
+                    <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight mb-3">Toma el control de tu bienestar académico</h2>
+                    <p class="text-indigo-200 text-sm md:text-base leading-relaxed mb-6">El estrés académico no es un signo de debilidad, sino una señal para calibrar tus hábitos. Evalúate, encuentra herramientas inmediatas y rastrea tu estado.</p>
+                    <div class="flex flex-wrap gap-3">
+                        <button onclick="switchTab('assessment')" class="bg-white text-indigo-900 px-5 py-2.5 rounded-xl font-bold hover:bg-indigo-50 transition-all text-sm flex items-center shadow-lg shadow-indigo-900/40">
+                            Hacer test de estrés <i class="fa-solid fa-arrow-right ml-2 text-xs"></i>
+                        </button>
+                        <button onclick="switchTab('reliefe')" class="bg-indigo-700/50 backdrop-blur text-white border border-indigo-500/40 px-5 py-2.5 rounded-xl font-bold hover:bg-indigo-700/70 transition-all text-sm flex items-center">
+                            <i class="fa-solid fa-wave-square mr-2"></i>Alivio Rápido
+                        </button>
+                    </div>
+                </div>
+                <div class="absolute right-0 bottom-0 top-0 w-1/3 opacity-10 hidden lg:block">
+                    <svg viewBox="0 0 100 100" class="w-full h-full fill-white">
+                        <circle cx="50" cy="50" r="40" />
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Panel de Estadísticas y Consejos -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Tarjeta Interactiva: Tu Estado Actual -->
+                <div class="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-start mb-4">
+                            <h3 class="font-bold text-slate-800 text-lg">Tu Último Reporte</h3>
+                            <span class="p-2 bg-violet-50 text-violet-600 rounded-lg"><i class="fa-solid fa-shield-heart"></i></span>
+                        </div>
+                        <div id="dashboard-status-container" class="space-y-4">
+                            <!-- Inyectado por JS -->
+                            <p class="text-slate-500 text-sm">Aún no has registrado un nivel de estrés hoy. Completa una evaluación rápida para ver tus datos.</p>
+                        </div>
+                    </div>
+                    <div class="pt-6 border-t border-slate-100 mt-6 flex justify-between items-center text-xs text-slate-500">
+                        <span>Actualizado mediante test</span>
+                        <button onclick="switchTab('assessment')" class="text-indigo-600 hover:underline font-semibold">Iniciar Test</button>
+                    </div>
+                </div>
+
+                <!-- Tarjeta Interactiva: Historial de Estrés -->
+                <div class="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm lg:col-span-2 flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-start mb-4">
+                            <h3 class="font-bold text-slate-800 text-lg">Tendencia de Estrés (Últimos 7 días)</h3>
+                            <div class="flex items-center space-x-2">
+                                <span class="h-3 w-3 rounded-full bg-red-400 inline-block"></span><span class="text-xs text-slate-500">Nivel de Estrés</span>
+                            </div>
+                        </div>
+                        <div class="h-48 flex items-end justify-between px-2 pt-4 relative" id="chart-container">
+                            <!-- Eje Y -->
+                            <div class="absolute left-0 top-0 bottom-0 flex flex-col justify-between text-[10px] text-slate-400 pointer-events-none">
+                                <span>10 (Alto)</span>
+                                <span>5 (Medio)</span>
+                                <span>1 (Bajo)</span>
+                            </div>
+                            <!-- Gráfico dinámico SVG/HTML inyectado por JS -->
+                            <div id="chart-bars-wrapper" class="w-full h-full ml-12 flex items-end justify-around gap-2">
+                                <!-- Barras inyectadas por JS -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pt-4 border-t border-slate-100 flex justify-between items-center text-xs text-slate-500">
+                        <span>Mantén tu nivel por debajo de 6 para un óptimo rendimiento cognitivo.</span>
+                        <button onclick="clearMoodHistory()" class="text-red-500 hover:underline font-semibold">Borrar Historial</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Consejos Académicos y Salud Mental -->
+            <div>
+                <h3 class="text-2xl font-bold text-slate-800 mb-6 flex items-center gap-2">
+                    <i class="fa-solid fa-graduation-cap text-indigo-600"></i> ¿Cómo balancear Estudio y Salud Mental?
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-emerald-50/50 border border-emerald-100 p-6 rounded-2xl transition-all hover:shadow-md">
+                        <div class="w-10 h-10 bg-emerald-100 text-emerald-700 flex items-center justify-center rounded-xl mb-4"><i class="fa-solid fa-bed"></i></div>
+                        <h4 class="font-bold text-slate-800 mb-2">Higiene del Sueño</h4>
+                        <p class="text-slate-600 text-sm leading-relaxed">Dormir menos de 7 horas reduce la retención de memoria hasta un 40%. Intenta desconectar pantallas 30 minutos antes de dormir para consolidar el aprendizaje.</p>
+                    </div>
+                    <div class="bg-indigo-50/50 border border-indigo-100 p-6 rounded-2xl transition-all hover:shadow-md">
+                        <div class="w-10 h-10 bg-indigo-100 text-indigo-700 flex items-center justify-center rounded-xl mb-4"><i class="fa-solid fa-hand-holding-hand"></i></div>
+                        <h4 class="font-bold text-slate-800 mb-2">La Curva del Olvido</h4>
+                        <p class="text-slate-600 text-sm leading-relaxed">Repasar apuntes 10 minutos al finalizar el día evita tener que pasar noches enteras sin dormir antes del examen final, reduciendo radicalmente el cortisol.</p>
+                    </div>
+                    <div class="bg-rose-50/50 border border-rose-100 p-6 rounded-2xl transition-all hover:shadow-md">
+                        <div class="w-10 h-10 bg-rose-100 text-rose-700 flex items-center justify-center rounded-xl mb-4"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                        <h4 class="font-bold text-slate-800 mb-2">Síndrome de Burnout</h4>
+                        <p class="text-slate-600 text-sm leading-relaxed">Si sientes fatiga emocional o que tu mente se bloquea al ver un libro, necesitas parar. Forzarte en ese estado aumenta la frustración y baja tu autoeficacia.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= TEST DE ESTRÉS ACADÉMICO ================= -->
+        <section id="view-assessment" class="hidden max-w-3xl mx-auto space-y-8 animate-fade">
+            <!-- Tarjeta Principal del Test -->
+            <div class="bg-white rounded-3xl p-6 md:p-10 border border-slate-100 shadow-xl relative overflow-hidden">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-6 mb-8">
+                    <div>
+                        <h2 class="text-2xl font-bold text-slate-800">Cuestionario de Autoevaluación</h2>
+                        <p class="text-slate-500 text-sm">Responde con honestidad basándote en las últimas dos semanas universitarias/escolares.</p>
+                    </div>
+                    <span class="p-3 bg-indigo-50 text-indigo-600 rounded-2xl hidden sm:block"><i class="fa-solid fa-notes-medical text-xl"></i></span>
+                </div>
+
+                <div id="test-progress-bar-wrapper" class="w-full bg-slate-100 h-2 rounded-full mb-8 relative">
+                    <div id="test-progress-bar" class="bg-indigo-600 h-2 rounded-full transition-all duration-300 w-[10%]"></div>
+                </div>
+
+                <!-- Preguntas Dinámicas -->
+                <div id="question-card" class="space-y-6">
+                    <span id="question-counter" class="text-xs font-bold text-indigo-600 tracking-wider uppercase">Pregunta 1 de 6</span>
+                    <h3 id="question-text" class="text-xl font-bold text-slate-800 leading-snug">¿Con qué frecuencia experimentas dolores físicos por sobrecarga de estudio (dolor de cabeza, hombros, cuello, fatiga)?</h3>
+                    
+                    <div class="space-y-3 pt-4" id="answers-container">
+                        <!-- Opciones dinámicas -->
+                    </div>
+                </div>
+
+                <!-- Resultados del Test (Ocultos al inicio) -->
+                <div id="results-card" class="hidden text-center space-y-8 py-6">
+                    <div class="w-24 h-24 rounded-full mx-auto flex items-center justify-center text-4xl shadow-lg" id="results-badge-color">
+                        <i id="results-icon"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-extrabold text-slate-800" id="results-title">Nivel de Estrés: Medio-Alto</h3>
+                        <p class="text-slate-600 mt-2 max-w-lg mx-auto" id="results-description">Tienes un nivel de presión importante. Aunque sigues funcionando, tu cuerpo está mandando señales de advertencia.</p>
+                    </div>
+                    <div class="bg-slate-50 p-6 rounded-2xl max-w-lg mx-auto text-left border border-slate-100 space-y-3">
+                        <h4 class="font-bold text-slate-800 text-sm uppercase tracking-wider">Recomendaciones sugeridas:</h4>
+                        <ul class="text-sm text-slate-600 space-y-2 list-disc list-inside" id="results-recommendations">
+                            <!-- Inyectadas por JS -->
+                        </ul>
+                    </div>
+                    <div class="flex justify-center gap-4">
+                        <button onclick="resetTest()" class="bg-slate-100 text-slate-700 hover:bg-slate-200 px-6 py-3 rounded-xl font-bold transition-all text-sm">Repetir Test</button>
+                        <button onclick="switchTab('reliefe')" class="bg-indigo-600 text-white hover:bg-indigo-700 px-6 py-3 rounded-xl font-bold transition-all text-sm shadow-md shadow-indigo-600/30">Ir a Técnicas de Alivio</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= TÉCNICAS DE ALIVIO INMEDIATO ================= -->
+        <section id="view-reliefe" class="hidden space-y-8 animate-fade">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Respiración Guiada con Ritmo Cuadrado (4-4-4-4) -->
+                <div class="bg-white rounded-3xl p-6 md:p-8 border border-slate-100 shadow-xl flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h3 class="text-xl font-bold text-slate-800">Respiración Guiada de Caja</h3>
+                                <p class="text-sm text-slate-500">Un método de regulación del sistema nervioso autonómico usado en situaciones de pánico o bloqueo.</p>
+                            </div>
+                            <span class="p-3 bg-emerald-50 text-emerald-600 rounded-xl"><i class="fa-solid fa-wind text-lg"></i></span>
+                        </div>
+
+                        <!-- Panel de Animación -->
+                        <div class="bg-slate-50 border border-slate-100 rounded-2xl p-10 flex flex-col items-center justify-center min-h-[300px] mt-6 relative overflow-hidden">
+                            <!-- Círculo de Respiración -->
+                            <div id="breathe-pulse-circle" class="w-24 h-24 rounded-full bg-emerald-200 flex items-center justify-center text-white transition-all duration-1000 ease-in-out">
+                                <i class="fa-solid fa-heart-pulse text-2xl animate-pulse"></i>
+                            </div>
+                            <h4 id="breathe-action-text" class="text-xl font-extrabold text-slate-800 mt-12 tracking-wide text-center">Pulsa Iniciar</h4>
+                            <p id="breathe-sub-text" class="text-xs text-slate-500 mt-2 text-center max-w-xs">Inspirado en la técnica táctica de respiración militar.</p>
+                            
+                            <!-- Indicador de fases de respiración en forma de barra secuencial -->
+                            <div class="mt-6 flex justify-center space-x-2 w-full max-w-xs">
+                                <span id="phase-inhale" class="h-1.5 flex-1 rounded-full bg-slate-200 transition-colors"></span>
+                                <span id="phase-hold-1" class="h-1.5 flex-1 rounded-full bg-slate-200 transition-colors"></span>
+                                <span id="phase-exhale" class="h-1.5 flex-1 rounded-full bg-slate-200 transition-colors"></span>
+                                <span id="phase-hold-2" class="h-1.5 flex-1 rounded-full bg-slate-200 transition-colors"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6">
+                        <button onclick="toggleBreathingGuide()" id="btn-toggle-breathe" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg shadow-indigo-600/30 transition-all text-sm">
+                            Comenzar Sesión (1 Minuto)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Relajación Auditiva Sintonizable (Generador de Sonidos Sintetizados) -->
+                <div class="bg-white rounded-3xl p-6 md:p-8 border border-slate-100 shadow-xl flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h3 class="text-xl font-bold text-slate-800">Sintetizador Relajante Local</h3>
+                                <p class="text-sm text-slate-500">Diseña tu entorno acústico de concentración con sonido sintético generado en tiempo real (sin consumo de datos móviles).</p>
+                            </div>
+                            <span class="p-3 bg-violet-50 text-violet-600 rounded-xl"><i class="fa-solid fa-sliders text-lg"></i></span>
+                        </div>
+
+                        <div class="space-y-6 mt-6 bg-slate-50 border border-slate-100 rounded-2xl p-6">
+                            <!-- Canal 1: Lluvia Blanca (Noise) -->
+                            <div class="space-y-2">
+                                <div class="flex justify-between text-sm">
+                                    <span class="font-bold text-slate-700"><i class="fa-solid fa-cloud-showers-heavy text-slate-500 mr-2"></i>Lluvia Fina (Ruido)</span>
+                                    <span id="vol-rain-label" class="text-xs text-slate-400">Apagado</span>
+                                </div>
+                                <input type="range" id="slider-rain" min="0" max="1" step="0.05" value="0" oninput="adjustSound('rain', this.value)" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-indigo-600">
+                            </div>
+
+                            <!-- Canal 2: Oscilador Binaural (Foco profundo) -->
+                            <div class="space-y-2">
+                                <div class="flex justify-between text-sm">
+                                    <span class="font-bold text-slate-700"><i class="fa-solid fa-wave-square text-slate-500 mr-2"></i>Onda Delta Alfa (Binaural)</span>
+                                    <span id="vol-alpha-label" class="text-xs text-slate-400">Apagado</span>
+                                </div>
+                                <input type="range" id="slider-alpha" min="0" max="0.5" step="0.01" value="0" oninput="adjustSound('alpha', this.value)" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-indigo-600">
+                            </div>
+
+                            <!-- Campana de meditación instantánea -->
+                            <div class="pt-4 border-t border-slate-200 flex items-center justify-between">
+                                <div>
+                                    <span class="font-bold text-slate-700 block text-sm"><i class="fa-solid fa-bell text-slate-500 mr-2"></i>Campana Tibetana</span>
+                                    <span class="text-xs text-slate-400 block">Sintetizador de cuenco metálico</span>
+                                </div>
+                                <button onclick="playBowlBell()" class="p-3 bg-white border border-slate-200 hover:border-indigo-600 text-indigo-600 rounded-xl transition-all shadow-sm">
+                                    <i class="fa-solid fa-bell text-lg"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 flex flex-col space-y-2">
+                        <button onclick="startAudioContext()" id="btn-audio-activate" class="w-full bg-slate-900 text-white font-bold py-3.5 px-6 rounded-xl hover:bg-slate-800 transition-all text-sm flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-power-off text-emerald-400"></i> Encender Sintetizador de Audio
+                        </button>
+                        <p class="text-[10px] text-slate-400 text-center">Usa audífonos para una inmersión completa. El sonido se crea dinámicamente mediante osciladores Web Audio API.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= TEMPORIZADOR POMODORO CON PAUSAS ACTIVAS ================= -->
+        <section id="view-pomodoro" class="hidden space-y-8 animate-fade">
+            <div class="max-w-4xl mx-auto bg-white rounded-3xl border border-slate-100 shadow-xl overflow-hidden grid grid-cols-1 md:grid-cols-5">
+                <!-- Reloj -->
+                <div class="md:col-span-3 bg-slate-900 text-white p-8 md:p-12 flex flex-col justify-between items-center text-center relative">
+                    <span class="absolute top-4 left-4 text-xs font-bold tracking-widest uppercase text-slate-400">Study Companion</span>
+                    
+                    <div class="my-auto space-y-4">
+                        <div id="pomo-mode-badge" class="bg-indigo-500/20 border border-indigo-500/40 px-4 py-1.5 rounded-full text-xs font-bold text-indigo-300 inline-block">Sesión de Enfoque</div>
+                        <h2 id="pomo-timer-display" class="text-7xl font-extrabold tracking-tighter">25:00</h2>
+                    </div>
+
+                    <div class="w-full flex space-x-3 mt-6">
+                        <button onclick="togglePomodoro()" id="btn-pomo-start" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg shadow-indigo-600/30 transition-all text-sm">Iniciar</button>
+                        <button onclick="resetPomodoro()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 font-semibold py-3 px-6 rounded-xl transition-all text-sm">Reiniciar</button>
+                    </div>
+                </div>
+
+                <!-- Configuración y Pausas Activas -->
+                <div class="md:col-span-2 p-6 md:p-8 flex flex-col justify-between space-y-6">
+                    <div class="space-y-4">
+                        <h3 class="font-bold text-slate-800 text-lg border-b border-slate-100 pb-2">Plan de Estudio</h3>
+                        
+                        <div class="grid grid-cols-2 gap-2">
+                            <button onclick="setPomoCustom(25, 'focus')" class="border border-slate-200 text-slate-700 hover:border-indigo-600 rounded-xl py-2 px-3 text-xs font-semibold hover:bg-slate-50 transition-all">25m Enfoque</button>
+                            <button onclick="setPomoCustom(5, 'break')" class="border border-slate-200 text-slate-700 hover:border-indigo-600 rounded-xl py-2 px-3 text-xs font-semibold hover:bg-slate-50 transition-all">5m Pausa Corta</button>
+                        </div>
+
+                        <div class="p-4 bg-amber-50 border border-amber-100 rounded-xl">
+                            <h4 class="text-xs font-bold text-amber-800 uppercase tracking-wide mb-1"><i class="fa-solid fa-lightbulb"></i> Sugerencia de Pausa Activa</h4>
+                            <p id="pomo-tip-text" class="text-xs text-amber-700 leading-relaxed">Cuando empiece el descanso: Aléjate de las pantallas, estira tus brazos y gira tu cuello en círculos lentos por 20 segundos.</p>
+                        </div>
+                    </div>
+
+                    <div class="text-xs text-slate-500 leading-relaxed space-y-2">
+                        <p class="font-bold text-slate-700"><i class="fa-solid fa-circle-info mr-1"></i> ¿Por qué sirve Pomodoro contra el estrés?</p>
+                        <p>Evita que el cerebro acumule fatiga severa (el "agotamiento mental"). Al forzar descansos pequeños y continuos, el nivel de ansiedad por terminar no escala de manera abrupta.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= DIARIO Y REFRAMING DE PENSAMIENTOS ================= -->
+        <section id="view-journal" class="hidden space-y-8 animate-fade">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Bitácora de Registro Diario -->
+                <div class="bg-white rounded-3xl p-6 md:p-8 border border-slate-100 shadow-xl flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h3 class="text-xl font-bold text-slate-800">Registrar Bitácora Diario</h3>
+                                <p class="text-sm text-slate-500">Haz un balance mental diario. Llevar una bitácora reduce la carga de preocupación inconsciente.</p>
+                            </div>
+                            <span class="p-3 bg-rose-50 text-rose-600 rounded-xl"><i class="fa-solid fa-heart mr-2"></i></span>
+                        </div>
+
+                        <form id="mood-journal-form" class="space-y-4 mt-6">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wide mb-1">Nivel de estrés hoy</label>
+                                <div class="flex justify-between gap-1">
+                                    <button type="button" onclick="selectFormStress(1)" class="stress-opt-btn flex-1 py-2 rounded-lg text-xs font-bold border transition-all text-slate-600 border-slate-200" data-level="1">1</button>
+                                    <button type="button" onclick="selectFormStress(3)" class="stress-opt-btn flex-1 py-2 rounded-lg text-xs font-bold border transition-all text-slate-600 border-slate-200" data-level="3">3</button>
+                                    <button type="button" onclick="selectFormStress(5)" class="stress-opt-btn flex-1 py-2 rounded-lg text-xs font-bold border transition-all text-slate-600 border-slate-200" data-level="5">5</button>
+                                    <button type="button" onclick="selectFormStress(7)" class="stress-opt-btn flex-1 py-2 rounded-lg text-xs font-bold border transition-all text-slate-600 border-slate-200" data-level="7">7</button>
+                                    <button type="button" onclick="selectFormStress(9)" class="stress-opt-btn flex-1 py-2 rounded-lg text-xs font-bold border transition-all text-slate-600 border-slate-200" data-level="9">9</button>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wide mb-1">¿Qué generó mayor tensión académica hoy?</label>
+                                <select id="journal-trigger" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 text-sm focus:outline-none focus:border-indigo-600">
+                                    <option value="Exámenes inminentes">Exámenes / Evaluaciones inminentes</option>
+                                    <option value="Exceso de proyectos">Exceso de tareas y proyectos prácticos</option>
+                                    <option value="Falta de tiempo de ocio">Falta de tiempo libre u ocio</option>
+                                    <option value="Dificultad de concentración">Dificultad de concentración por fatiga</option>
+                                    <option value="Miedo al fracaso">Presión familiar o miedo a reprobar</option>
+                                    <option value="Ninguno / Controlado">Ninguno, todo controlado</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wide mb-1">Notas rápidas</label>
+                                <textarea id="journal-note" placeholder="¿Cómo te sentiste hoy de manera general?" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 text-sm h-24 focus:outline-none focus:border-indigo-600 resize-none"></textarea>
+                            </div>
+
+                            <button type="submit" class="w-full bg-slate-900 text-white font-bold py-3.5 px-6 rounded-xl hover:bg-slate-800 transition-all text-sm">
+                                Registrar Bitácora de Hoy
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Técnica de Reframing (Reestructuración Cognitiva) -->
+                <div class="bg-white rounded-3xl p-6 md:p-8 border border-slate-100 shadow-xl flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h3 class="text-xl font-bold text-slate-800">Desarmador de Distorsiones Cognitivas</h3>
+                                <p class="text-sm text-slate-500">¿Pensamientos catastróficos? Pásalos por el filtro lógico cognitivo-conductual.</p>
+                            </div>
+                            <span class="p-3 bg-indigo-50 text-indigo-600 rounded-xl"><i class="fa-solid fa-code-merge text-lg"></i></span>
+                        </div>
+
+                        <!-- Panel Interactivo del Reestrucutrador -->
+                        <div class="space-y-4 mt-6">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wide mb-1">1. Escribe tu pensamiento estresante</label>
+                                <input type="text" id="thought-input" placeholder="Ej: 'No voy a pasar este examen y arruinaré mi carrera entera.'" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 text-sm focus:outline-none focus:border-indigo-600">
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wide mb-1">2. Identifica el sesgo (Distorsión)</label>
+                                <select id="distortion-select" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 text-sm focus:outline-none focus:border-indigo-600">
+                                    <option value="Pensamiento Catastrófico">Catastrofismo (Imaginar el peor escenario posible)</option>
+                                    <option value="Todo o Nada">Blanco o Negro (Si no saco 10/10 soy un fracaso)</option>
+                                    <option value="Lectura de Mente">Lectura de mente (Creo que mi profesor piensa que no sirvo)</option>
+                                    <option value="Personalización">Personalización (Culparme totalmente por cosas externas)</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wide mb-1">3. Escribe un enfoque objetivo y lógico</label>
+                                <input type="text" id="reframed-input" placeholder="Ej: 'Un examen mide mi estudio de un tema, no mi valor como persona o mi éxito total.'" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 text-sm focus:outline-none focus:border-indigo-600">
+                            </div>
+
+                            <button onclick="saveReframedThought()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg shadow-indigo-600/30 transition-all text-sm">
+                                Guardar Afirmación Neutra
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 border-t border-slate-100 pt-4">
+                        <span class="block text-xs font-bold text-slate-700 uppercase tracking-wide mb-2">Mis Anclas y Afirmaciones Guardadas</span>
+                        <div id="saved-thoughts" class="space-y-2 max-h-32 overflow-y-auto">
+                            <!-- Inyectado por JS -->
+                            <p class="text-xs text-slate-400 italic">No tienes afirmaciones guardadas aún.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ================= PIE DE PÁGINA ================= -->
+    <footer class="bg-white border-t border-slate-100 py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-3">
+            <p class="text-sm text-slate-500 font-semibold">CalmMind es un software para el fomento de la salud mental y la autogestión académica de estudiantes.</p>
+            <p class="text-xs text-slate-400">Si sientes que el estrés está bloqueando por completo tu vida, te recomendamos buscar orientación clínica especializada en tu departamento escolar o con un especialista clínico.</p>
+        </div>
+    </footer>
+
+    <script>
+        // === Inicialización de Datos (LocalStorage) ===
+        const storageKeys = {
+            moodHistory: 'calmmind_mood_history_2026',
+            reframedThoughts: 'calmmind_reframed_thoughts_2026'
+        };
+
+        // Estado Global
+        let activeTab = 'dashboard';
+        let currentStressFormVal = 5; 
+        let audioCtx = null;
+        let rainNode = null;
+        let rainFilter = null;
+        let alphaOscNodeLeft = null;
+        let alphaOscNodeRight = null;
+        let alphaVolumeNode = null;
+
+        // Historial predeterminado por si está vacío
+        let moodHistory = JSON.parse(localStorage.getItem(storageKeys.moodHistory)) || [
+            { date: 'Lun', stress: 3 },
+            { date: 'Mar', stress: 5 },
+            { date: 'Mié', stress: 4 },
+            { date: 'Jue', stress: 7 },
+            { date: 'Vie', stress: 6 },
+            { date: 'Sáb', stress: 4 },
+        ];
+
+        let reframedThoughts = JSON.parse(localStorage.getItem(storageKeys.reframedThoughts)) || [
+            { original: "No voy a aprobar nada", distortion: "Todo o nada", reframed: "Incluso si desapruebo, puedo reintentarlo. Esto no define mi futuro." }
+        ];
+
+        // === Sistema SPA (Tab Management) ===
+        function switchTab(tabId) {
+            // Ocultar vistas
+            document.querySelectorAll('main > section').forEach(el => el.classList.add('hidden'));
+            // Mostrar vista activa
+            document.getElementById(`view-${tabId}`).classList.remove('hidden');
+
+            // Actualizar estilo botones escritorio
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.className = "tab-btn px-4 py-2 rounded-lg text-sm font-semibold transition-all text-slate-600 hover:text-indigo-600 hover:bg-indigo-50/50";
+            });
+            document.getElementById(`btn-${tabId}`).className = "tab-btn px-4 py-2 rounded-lg text-sm font-semibold transition-all bg-indigo-50 text-indigo-600";
+
+            // Actualizar estilo botones móvil
+            document.querySelectorAll('#mobile-menu button').forEach(btn => {
+                btn.className = "w-full text-left px-3 py-2 rounded-lg text-sm font-semibold block text-slate-600 hover:bg-slate-50";
+            });
+            document.getElementById(`mob-btn-${tabId}`).className = "w-full text-left px-3 py-2 rounded-lg text-sm font-semibold block bg-indigo-50 text-indigo-600";
+
+            activeTab = tabId;
+            if (tabId === 'dashboard') {
+                renderDashboardStatus();
+                renderTrendChart();
+            }
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            const icon = document.getElementById('menu-icon');
+            if (menu.classList.contains('hidden')) {
+                menu.classList.remove('hidden');
+                icon.className = "fa-solid fa-xmark text-xl";
+            } else {
+                menu.classList.add('hidden');
+                icon.className = "fa-solid fa-bars text-xl";
+            }
+        }
+
+        // Sistema Toast de Alerta Personalizada
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const msg = document.getElementById('toast-message');
+            const icon = document.getElementById('toast-icon');
+
+            msg.textContent = message;
+            if (type === 'success') {
+                icon.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
+                icon.className = "text-emerald-400";
+            } else {
+                icon.innerHTML = '<i class="fa-solid fa-circle-info"></i>';
+                icon.className = "text-amber-400";
+            }
+
+            toast.classList.remove('translate-x-full');
+            setTimeout(() => {
+                toast.classList.add('translate-x-full');
+            }, 3000);
+        }
+
+        // === STREAMING_CHUNK: Sistema de Gráfico Histórico y Dashboard ===
+        function renderTrendChart() {
+            const container = document.getElementById('chart-bars-wrapper');
+            container.innerHTML = '';
+            
+            // Renderizar barras usando porcentajes
+            moodHistory.forEach(day => {
+                const heightPercentage = day.stress * 10; // escala 1-10 a 10-100%
+                let barColor = 'bg-emerald-400';
+                if (day.stress > 4 && day.stress <= 7) barColor = 'bg-amber-400';
+                else if (day.stress > 7) barColor = 'bg-rose-500';
+
+                const barGroup = document.createElement('div');
+                barGroup.className = "flex flex-col items-center justify-end h-full flex-1 group relative cursor-help";
+                barGroup.innerHTML = `
+                    <div class="absolute -top-6 bg-slate-800 text-white text-[10px] py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-20">
+                        Estrés: ${day.stress}/10
+                    </div>
+                    <div class="${barColor} w-6 sm:w-8 rounded-t-md transition-all duration-500" style="height: ${heightPercentage}%"></div>
+                    <span class="text-[10px] text-slate-400 mt-2 font-medium">${day.date}</span>
+                `;
+                container.appendChild(barGroup);
+            });
+        }
+
+        function renderDashboardStatus() {
+            const container = document.getElementById('dashboard-status-container');
+            const lastLog = moodHistory[moodHistory.length - 1];
+
+            if (!lastLog) {
+                container.innerHTML = `<p class="text-slate-500 text-sm">No hay registros de estrés. Completa una evaluación rápida.</p>`;
+                return;
+            }
+
+            let statusTitle = "Nivel Seguro";
+            let statusDesc = "Te encuentras en óptimas condiciones de enfoque y bienestar emocional.";
+            let statusColor = "text-emerald-600 bg-emerald-50 border-emerald-100";
+
+            if (lastLog.stress > 4 && lastLog.stress <= 7) {
+                statusTitle = "Presión Moderada";
+                statusDesc = "Muestras fatiga o tensión académica. Es buen momento de planificar tus descansos y desconectar.";
+                statusColor = "text-amber-700 bg-amber-50 border-amber-100";
+            } else if (lastLog.stress > 7) {
+                statusTitle = "Saturación / Estrés Crónico";
+                statusDesc = "Tu sistema nervioso se encuentra sobreexcitado. Se aconseja bajar carga mental, delegar proyectos y descansar de inmediato.";
+                statusColor = "text-rose-700 bg-rose-50 border-rose-100";
+            }
+
+            container.innerHTML = `
+                <div class="p-4 rounded-xl border ${statusColor} space-y-1">
+                    <span class="text-xs font-bold uppercase tracking-wider block">Estado actual de hoy</span>
+                    <h4 class="font-bold text-lg">${statusTitle} (${lastLog.stress}/10)</h4>
+                    <p class="text-xs leading-relaxed opacity-90">${statusDesc}</p>
+                </div>
+                <div class="mt-4 flex items-center gap-2 text-xs text-slate-500">
+                    <i class="fa-solid fa-clock"></i> Último registro cargado hace poco.
+                </div>
+            `;
+        }
+
+        function clearMoodHistory() {
+            moodHistory = [];
+            localStorage.setItem(storageKeys.moodHistory, JSON.stringify([]));
+            renderDashboardStatus();
+            renderTrendChart();
+            showToast("Se borró tu historial de bienestar.", "info");
+        }
+
+        // === STREAMING_CHUNK: Sistema Interactiva de Cuestionario (Test de Estrés) ===
+        const testQuestions = [
+            {
+                text: "¿Con qué frecuencia experimentas dolores físicos por sobrecarga de estudio (dolor de cabeza, hombros, cuello, fatiga)?",
+                options: [
+                    { label: "Casi nunca o nunca", value: 1 },
+                    { label: "De vez en cuando", value: 2 },
+                    { label: "Frecuentemente durante la semana", value: 4 },
+                    { label: "Casi todos los días o de forma constante", value: 5 }
+                ]
+            },
+            {
+                text: "¿Sientes que tus niveles de atención y memoria han decaído severamente en tus horas de estudio?",
+                options: [
+                    { label: "No, me concentro con fluidez", value: 1 },
+                    { label: "Solo en materias muy complejas", value: 2 },
+                    { label: "Suelo releer páginas sin retener nada", value: 4 },
+                    { label: "Tengo bloqueo mental continuo", value: 5 }
+                ]
+            },
+            {
+                text: "¿Has experimentado alteraciones notables en tus hábitos de sueño (insomnio, despertar asustado, sueño poco reparador)?",
+                options: [
+                    { label: "Duermo bien, de 7 a 8 horas", value: 1 },
+                    { label: "Me cuesta dormir un poco los domingos", value: 2 },
+                    { label: "Duermo fragmentado o interrumpido", value: 4 },
+                    { label: "Tengo insomnio crónico recurrente", value: 5 }
+                ]
+            },
+            {
+                text: "¿Cómo consideras tu tendencia a procrastinar tareas académicas debido a la angustia?",
+                options: [
+                    { label: "Baja, suelo trabajar a tiempo", value: 1 },
+                    { label: "Dejo las cosas para el fin de semana", value: 2 },
+                    { label: "Suelo aplazar por miedo a fallar en la tarea", value: 4 },
+                    { label: "Me paralizo por completo y no entrego", value: 5 }
+                ]
+            },
+            {
+                text: "¿Experimentas arrebatos de enojo, ganas de llorar o frustración repentina al estudiar?",
+                options: [
+                    { label: "Para nada", value: 1 },
+                    { label: "Muy rara vez", value: 2 },
+                    { label: "Sí, a veces colapso ante las tareas", value: 4 },
+                    { label: "Es mi constante diario emocional", value: 5 }
+                ]
+            }
+        ];
+
+        let currentQuestionIdx = 0;
+        let testPoints = 0;
+
+        function loadTestQuestion() {
+            const progress = ((currentQuestionIdx + 1) / testQuestions.length) * 100;
+            document.getElementById('test-progress-bar').style.width = `${progress}%`;
+            document.getElementById('question-counter').textContent = `Pregunta ${currentQuestionIdx + 1} de ${testQuestions.length}`;
+            
+            const question = testQuestions[currentQuestionIdx];
+            document.getElementById('question-text').textContent = question.text;
+
+            const answersContainer = document.getElementById('answers-container');
+            answersContainer.innerHTML = '';
+
+            question.options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = "w-full text-left bg-slate-50 hover:bg-slate-100 hover:border-indigo-600 border border-slate-200 transition-all rounded-xl p-4 text-sm font-semibold text-slate-700 flex justify-between items-center";
+                btn.innerHTML = `
+                    <span>${opt.label}</span>
+                    <i class="fa-solid fa-chevron-right text-slate-400 text-xs"></i>
+                `;
+                btn.onclick = () => selectTestOption(opt.value);
+                answersContainer.appendChild(btn);
+            });
+        }
+
+        function selectTestOption(points) {
+            testPoints += points;
+            if (currentQuestionIdx < testQuestions.length - 1) {
+                currentQuestionIdx++;
+                loadTestQuestion();
+            } else {
+                showTestResults();
+            }
+        }
+
+        function showTestResults() {
+            document.getElementById('question-card').classList.add('hidden');
+            document.getElementById('test-progress-bar-wrapper').classList.add('hidden');
+            
+            const resultsCard = document.getElementById('results-card');
+            resultsCard.classList.remove('hidden');
+
+            const badge = document.getElementById('results-badge-color');
+            const icon = document.getElementById('results-icon');
+            const title = document.getElementById('results-title');
+            const desc = document.getElementById('results-description');
+            const recommendations = document.getElementById('results-recommendations');
+
+            // Escala de puntuación total (max 25)
+            let resultLevel = 0;
+            recommendations.innerHTML = '';
+
+            if (testPoints <= 9) {
+                badge.className = "w-24 h-24 rounded-full mx-auto flex items-center justify-center text-4xl shadow-lg bg-emerald-50 text-emerald-600";
+                icon.className = "fa-solid fa-face-smile";
+                title.textContent = "Estrés Controlado y Saludable";
+                desc.textContent = "¡Felicitaciones! Has desarrollado una excelente resiliencia emocional y un método organizativo balanceado frente a tus clases académicas.";
+                recommendations.innerHTML = `
+                    <li>Sigue utilizando la técnica Pomodoro para mantener tus periodos de concentración.</li>
+                    <li>Sigue priorizando 7-8 horas constantes de sueño diario.</li>
+                    <li>Comparte tus rutinas con compañeros que estén pasando dificultades.</li>
+                `;
+                resultLevel = 3;
+            } else if (testPoints <= 17) {
+                badge.className = "w-24 h-24 rounded-full mx-auto flex items-center justify-center text-4xl shadow-lg bg-amber-50 text-amber-600";
+                icon.className = "fa-solid fa-face-meh";
+                title.textContent = "Sobrecarga de Estrés Moderado";
+                desc.textContent = "Muestras síntomas claros de fatiga. Aunque sigues respondiendo a tus tareas, tu cuerpo y mente están comenzando a resentir el ritmo de estudio.";
+                recommendations.innerHTML = `
+                    <li>Dedica 10 minutos cada tarde a la Respiración Guiada para apaciguar el ritmo nervioso.</li>
+                    <li>Evita utilizar café o estimulantes energéticos de noche; bloquean el descanso reparador de tu memoria.</li>
+                    <li>Aprende a decir 'no' a proyectos o tareas extracurriculares no prioritarias por ahora.</li>
+                `;
+                resultLevel = 6;
+            } else {
+                badge.className = "w-24 h-24 rounded-full mx-auto flex items-center justify-center text-4xl shadow-lg bg-rose-50 text-rose-600";
+                icon.className = "fa-solid fa-face-frown-open";
+                title.textContent = "Alerta de Desgaste (Estrés Severo)";
+                desc.textContent = "Estás lidiando con niveles preocupantes de estrés que merman tu rendimiento cognitivo y físico. Es indispensable cambiar prioridades de manera inmediata.";
+                recommendations.innerHTML = `
+                    <li>Acércate al tutor o departamento psicopedagógico de tu escuela/universidad; te guiarán con empatía.</li>
+                    <li>Escribe tus afirmaciones en el 'Desarmador de Distorsiones' para reducir el catastrofismo.</li>
+                    <li>Pausa tu cronograma de estudio. Es indispensable un respiro para recuperar tu claridad mental.</li>
+                `;
+                resultLevel = 9;
+            }
+
+            // Registrar automáticamente en el historial de forma simulada
+            const days = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+            const today = days[new Date().getDay()];
+            
+            // Reemplazar o agregar el día de hoy
+            const idx = moodHistory.findIndex(d => d.date === today);
+            if (idx !== -1) moodHistory[idx].stress = resultLevel;
+            else moodHistory.push({ date: today, stress: resultLevel });
+
+            localStorage.setItem(storageKeys.moodHistory, JSON.stringify(moodHistory));
+        }
+
+        function resetTest() {
+            currentQuestionIdx = 0;
+            testPoints = 0;
+            document.getElementById('question-card').classList.remove('hidden');
+            document.getElementById('test-progress-bar-wrapper').classList.remove('hidden');
+            document.getElementById('results-card').classList.add('hidden');
+            loadTestQuestion();
+        }
+
+        // === STREAMING_CHUNK: Herramienta de Respiración Táctica Cuadrada (4x4) ===
+        let breatheTimer = null;
+        let breathePhase = 0; // 0: inhale, 1: hold, 2: exhale, 3: hold
+        let isBreathingActive = false;
+
+        function toggleBreathingGuide() {
+            const btn = document.getElementById('btn-toggle-breathe');
+            const circle = document.getElementById('breathe-pulse-circle');
+            const actionText = document.getElementById('breathe-action-text');
+
+            if (isBreathingActive) {
+                clearInterval(breatheTimer);
+                isBreathingActive = false;
+                btn.textContent = "Comenzar Sesión (1 Minuto)";
+                btn.className = "w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg shadow-indigo-600/30 transition-all text-sm";
+                actionText.textContent = "Pulsa Iniciar";
+                circle.className = "w-24 h-24 rounded-full bg-emerald-200 flex items-center justify-center text-white transition-all duration-1000 ease-in-out";
+                resetPhaseBarColors();
+                playBellSoundPitch(220); // campana de parada suave
+                return;
+            }
+
+            // Iniciar Audio si no se ha hecho
+            initAudioContextIfNeeded();
+
+            isBreathingActive = true;
+            btn.textContent = "Detener Sesión";
+            btn.className = "w-full bg-rose-600 hover:bg-rose-700 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg shadow-rose-600/30 transition-all text-sm";
+            breathePhase = 0;
+            runBreatheCycle();
+
+            breatheTimer = setInterval(() => {
+                breathePhase = (breathePhase + 1) % 4;
+                runBreatheCycle();
+            }, 4000);
+        }
+
+        function resetPhaseBarColors() {
+            document.getElementById('phase-inhale').className = "h-1.5 flex-1 rounded-full bg-slate-200 transition-colors";
+            document.getElementById('phase-hold-1').className = "h-1.5 flex-1 rounded-full bg-slate-200 transition-colors";
+            document.getElementById('phase-exhale').className = "h-1.5 flex-1 rounded-full bg-slate-200 transition-colors";
+            document.getElementById('phase-hold-2').className = "h-1.5 flex-1 rounded-full bg-slate-200 transition-colors";
+        }
+
+        function runBreatheCycle() {
+            const circle = document.getElementById('breathe-pulse-circle');
+            const actionText = document.getElementById('breathe-action-text');
+            resetPhaseBarColors();
+
+            if (breathePhase === 0) {
+                // Inhala
+                actionText.textContent = "INHALA suavemente...";
+                circle.className = "w-24 h-24 rounded-full breathe-inhale flex items-center justify-center text-white transition-all duration-[4000ms] ease-in-out";
+                document.getElementById('phase-inhale').className = "h-1.5 flex-1 rounded-full bg-emerald-500 transition-colors";
+                playBellSoundPitch(330); // Tono agradable inhala
+            } else if (breathePhase === 1) {
+                // Sostén
+                actionText.textContent = "SOSTÉN el aire...";
+                circle.className = "w-24 h-24 rounded-full breathe-hold flex items-center justify-center text-white transition-all duration-[4000ms] ease-in-out";
+                document.getElementById('phase-hold-1').className = "h-1.5 flex-1 rounded-full bg-blue-500 transition-colors";
+                playBellSoundPitch(392); // Tono agradable sostiene
+            } else if (breathePhase === 2) {
+                // Exhala
+                actionText.textContent = "EXHALA todo el aire...";
+                circle.className = "w-24 h-24 rounded-full breathe-exhale flex items-center justify-center text-white transition-all duration-[4000ms] ease-in-out";
+                document.getElementById('phase-exhale').className = "h-1.5 flex-1 rounded-full bg-rose-500 transition-colors";
+                playBellSoundPitch(294); // Tono exhalar
+            } else if (breathePhase === 3) {
+                // Sostén vacío
+                actionText.textContent = "MANTÉN el vacío...";
+                circle.className = "w-24 h-24 rounded-full breathe-rest flex items-center justify-center text-white transition-all duration-[4000ms] ease-in-out";
+                document.getElementById('phase-hold-2').className = "h-1.5 flex-1 rounded-full bg-amber-500 transition-colors";
+                playBellSoundPitch(261); // Tono vacío
+            }
+        }
+
+        // === STREAMING_CHUNK: Sintetizador con Web Audio API (Lluvia sintética y Campana) ===
+        function initAudioContextIfNeeded() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        async function startAudioContext() {
+            initAudioContextIfNeeded();
+            if (audioCtx.state === 'suspended') {
+                await audioCtx.resume();
+            }
+            
+            document.getElementById('btn-audio-activate').innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> Cargando Canales...`;
+
+            // Construir canal de Ruido (Lluvia)
+            if (!rainNode) {
+                const bufferSize = 2 * audioCtx.sampleRate;
+                const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+                const output = noiseBuffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) {
+                    output[i] = Math.random() * 2 - 1;
+                }
+
+                rainNode = audioCtx.createBufferSource();
+                rainNode.buffer = noiseBuffer;
+                rainNode.loop = true;
+
+                // Filtro para simular lluvia amortiguada en lugar de estática dura (White noise)
+                rainFilter = audioCtx.createBiquadFilter();
+                rainFilter.type = 'lowpass';
+                rainFilter.frequency.value = 1000;
+
+                rainVolumeNode = audioCtx.createGain();
+                rainVolumeNode.gain.value = 0; // Apagado por defecto
+
+                rainNode.connect(rainFilter);
+                rainFilter.connect(rainVolumeNode);
+                rainVolumeNode.connect(audioCtx.destination);
+                rainNode.start();
+            }
+
+            // Construir oscilador Binaural para relajación profunda
+            if (!alphaOscNodeLeft) {
+                alphaOscNodeLeft = audioCtx.createOscillator();
+                alphaOscNodeRight = audioCtx.createOscillator();
+                
+                // Tonos Binaurales en rango de onda Alfa (~10Hz de diferencia)
+                alphaOscNodeLeft.frequency.value = 200; // Canal izquierdo
+                alphaOscNodeRight.frequency.value = 210; // Canal derecho (diferencia de 10Hz = Alfa)
+
+                // Separadores estéreo
+                const pannerLeft = audioCtx.createStereoPanner ? audioCtx.createStereoPanner() : null;
+                const pannerRight = audioCtx.createStereoPanner ? audioCtx.createStereoPanner() : null;
+                if (pannerLeft && pannerRight) {
+                    pannerLeft.pan.value = -1;
+                    pannerRight.pan.value = 1;
+                }
+
+                alphaVolumeNode = audioCtx.createGain();
+                alphaVolumeNode.gain.value = 0; // Apagado por defecto
+
+                if (pannerLeft && pannerRight) {
+                    alphaOscNodeLeft.connect(pannerLeft);
+                    pannerLeft.connect(alphaVolumeNode);
+                    alphaOscNodeRight.connect(pannerRight);
+                    pannerRight.connect(alphaVolumeNode);
+                } else {
+                    alphaOscNodeLeft.connect(alphaVolumeNode);
+                    alphaOscNodeRight.connect(alphaVolumeNode);
+                }
+
+                alphaVolumeNode.connect(audioCtx.destination);
+                alphaOscNodeLeft.start();
+                alphaOscNodeRight.start();
+            }
+
+            document.getElementById('btn-audio-activate').innerHTML = `<i class="fa-solid fa-volume-high text-emerald-400"></i> Sintetizador Activo`;
+            showToast("Sintetizador listo. Desliza los canales para sonar.", "success");
+        }
+
+        function adjustSound(type, value) {
+            initAudioContextIfNeeded();
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+
+            const valFloat = parseFloat(value);
+            if (type === 'rain') {
+                if (rainVolumeNode) {
+                    rainVolumeNode.gain.setValueAtTime(valFloat, audioCtx.currentTime);
+                    document.getElementById('vol-rain-label').textContent = valFloat > 0 ? `${Math.round(valFloat * 100)}%` : "Apagado";
+                } else {
+                    showToast("Por favor, enciende el sintetizador primero.", "info");
+                }
+            } else if (type === 'alpha') {
+                if (alphaVolumeNode) {
+                    alphaVolumeNode.gain.setValueAtTime(valFloat, audioCtx.currentTime);
+                    document.getElementById('vol-alpha-label').textContent = valFloat > 0 ? `${Math.round(valFloat * 200)}%` : "Apagado";
+                } else {
+                    showToast("Por favor, enciende el sintetizador primero.", "info");
+                }
+            }
+        }
+
+        // Sintetizar Campana Tibetana
+        function playBowlBell() {
+            playBellSoundPitch(293.66); // Tono re
+            setTimeout(() => playBellSoundPitch(440), 150); // Tono la armónico
+        }
+
+        function playBellSoundPitch(frequency) {
+            initAudioContextIfNeeded();
+            if (!audioCtx) return;
+
+            const osc = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            
+            // Tipo triangular para emular cuenco de metal suave
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(frequency, audioCtx.currentTime);
+
+            // Filtro pasa bajos para suavizar
+            const filter = audioCtx.createBiquadFilter();
+            filter.type = 'lowpass';
+            filter.frequency.value = 800;
+
+            // Envolvente de decaimiento largo
+            gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 3);
+
+            osc.connect(filter);
+            filter.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+
+            osc.start();
+            osc.stop(audioCtx.currentTime + 3);
+        }
+
+        // === STREAMING_CHUNK: Temporizador Pomodoro con Pausas Activas ===
+        let pomoInterval = null;
+        let pomoTimeLeft = 25 * 60; // 25 minutos en segundos
+        let isPomoRunning = false;
+        let currentPomoMode = 'focus'; // focus o break
+
+        const pomoTips = {
+            focus: [
+                "Mantén tu libreta cerca. Si te llega una distracción a la mente, escríbela ahí y vuelve al enfoque.",
+                "Pon el celular boca abajo en modo no molestar.",
+                "Divide tu tarea en sub-objetivos de 10 minutos."
+            ],
+            break: [
+                "Aléjate de las pantallas, estira tus brazos y gira tu cuello en círculos lentos por 20 segundos.",
+                "Haz un estiramiento de pantorrillas o camina a tomar agua.",
+                "Respira hondo 3 veces por la nariz para desacelerar tu mente."
+            ]
+        };
+
+        function setPomoCustom(minutes, mode) {
+            clearInterval(pomoInterval);
+            isPomoRunning = false;
+            currentPomoMode = mode;
+            pomoTimeLeft = minutes * 60;
+            updatePomoDisplay();
+            
+            const badge = document.getElementById('pomo-mode-badge');
+            const startBtn = document.getElementById('btn-pomo-start');
+            startBtn.textContent = "Iniciar";
+
+            if (mode === 'focus') {
+                badge.textContent = "Sesión de Enfoque";
+                badge.className = "bg-indigo-500/20 border border-indigo-500/40 px-4 py-1.5 rounded-full text-xs font-bold text-indigo-300 inline-block";
+                rotatePomoTip('focus');
+            } else {
+                badge.textContent = "Descanso / Pausa Activa";
+                badge.className = "bg-emerald-500/20 border border-emerald-500/40 px-4 py-1.5 rounded-full text-xs font-bold text-emerald-300 inline-block";
+                rotatePomoTip('break');
+            }
+        }
+
+        function rotatePomoTip(mode) {
+            const list = pomoTips[mode];
+            const randTip = list[Math.floor(Math.random() * list.length)];
+            document.getElementById('pomo-tip-text').textContent = randTip;
+        }
+
+        function updatePomoDisplay() {
+            const minutes = Math.floor(pomoTimeLeft / 60);
+            const seconds = pomoTimeLeft % 60;
+            document.getElementById('pomo-timer-display').textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function togglePomodoro() {
+            const btn = document.getElementById('btn-pomo-start');
+            if (isPomoRunning) {
+                clearInterval(pomoInterval);
+                isPomoRunning = false;
+                btn.textContent = "Reanudar";
+            } else {
+                initAudioContextIfNeeded(); // Inicializar audio por si quiere usar sonidos al acabar
+                isPomoRunning = true;
+                btn.textContent = "Pausar";
+                pomoInterval = setInterval(() => {
+                    if (pomoTimeLeft > 0) {
+                        pomoTimeLeft--;
+                        updatePomoDisplay();
+                    } else {
+                        clearInterval(pomoInterval);
+                        isPomoRunning = false;
+                        handlePomoComplete();
+                    }
+                }, 1000);
+            }
+        }
+
+        function handlePomoComplete() {
+            playBowlBell(); // Alarma sonora discreta
+            showToast(currentPomoMode === 'focus' ? "¡Sesión completada! Hora de descansar." : "Descanso terminado. ¡A enfocar de nuevo!", "success");
+            if (currentPomoMode === 'focus') {
+                setPomoCustom(5, 'break');
+            } else {
+                setPomoCustom(25, 'focus');
+            }
+        }
+
+        function resetPomodoro() {
+            setPomoCustom(25, 'focus');
+        }
+
+        // === STREAMING_CHUNK: Diario de Estrés y Desarmador de Pensamientos ===
+        function selectFormStress(level) {
+            currentStressFormVal = level;
+            document.querySelectorAll('.stress-opt-btn').forEach(btn => {
+                btn.className = "stress-opt-btn flex-1 py-2 rounded-lg text-xs font-bold border transition-all text-slate-600 border-slate-200";
+            });
+            // Resaltar seleccionado
+            const activeBtn = document.querySelector(`.stress-opt-btn[data-level="${level}"]`);
+            if (activeBtn) {
+                activeBtn.className = "stress-opt-btn flex-1 py-2 rounded-lg text-xs font-bold border transition-all bg-indigo-600 text-white border-indigo-600";
+            }
+        }
+
+        // Formulario de Bitácora Diario
+        document.getElementById('mood-journal-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const days = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+            const today = days[new Date().getDay()];
+
+            const note = document.getElementById('journal-note').value;
+            const trigger = document.getElementById('journal-trigger').value;
+
+            // Guardar en el arreglo actual de historial
+            const index = moodHistory.findIndex(d => d.date === today);
+            if (index !== -1) {
+                moodHistory[index].stress = currentStressFormVal;
+            } else {
+                moodHistory.push({ date: today, stress: currentStressFormVal });
+            }
+
+            // Mantener solo últimos 7 días
+            if (moodHistory.length > 7) moodHistory.shift();
+
+            localStorage.setItem(storageKeys.moodHistory, JSON.stringify(moodHistory));
+            showToast("Bitácora registrada con éxito hoy.", "success");
+            
+            // Limpiar formulario de notas
+            document.getElementById('journal-note').value = '';
+            
+            // Forzar actualización de gráficos
+            renderTrendChart();
+            renderDashboardStatus();
+            switchTab('dashboard');
+        });
+
+        // Guardar Pensamiento Reestructurado (Reframing)
+        function saveReframedThought() {
+            const original = document.getElementById('thought-input').value.trim();
+            const distortion = document.getElementById('distortion-select').value;
+            const reframed = document.getElementById('reframed-input').value.trim();
+
+            if (!original || !reframed) {
+                showToast("Por favor llena los campos para desarmar el pensamiento.", "info");
+                return;
+            }
+
+            reframedThoughts.unshift({ original, distortion, reframed });
+            // Guardar solo los últimos 6
+            if (reframedThoughts.length > 6) reframedThoughts.pop();
+
+            localStorage.setItem(storageKeys.reframedThoughts, JSON.stringify(reframedThoughts));
+            
+            // Limpiar entradas
+            document.getElementById('thought-input').value = '';
+            document.getElementById('reframed-input').value = '';
+
+            renderReframedThoughts();
+            showToast("Nueva afirmación cognitiva guardada.", "success");
+        }
+
+        function renderReframedThoughts() {
+            const container = document.getElementById('saved-thoughts');
+            if (reframedThoughts.length === 0) {
+                container.innerHTML = `<p class="text-xs text-slate-400 italic">No tienes afirmaciones guardadas aún.</p>`;
+                return;
+            }
+
+            container.innerHTML = '';
+            reframedThoughts.forEach(thought => {
+                const item = document.createElement('div');
+                item.className = "p-3 bg-slate-50 border border-slate-100 rounded-xl space-y-1 text-xs";
+                item.innerHTML = `
+                    <div class="flex justify-between text-slate-400">
+                        <span class="font-bold text-[10px] text-red-400">Distorsión: ${thought.distortion}</span>
+                        <span class="italic text-[9px]">Original: "${thought.original}"</span>
+                    </div>
+                    <p class="text-slate-700 font-semibold"><i class="fa-solid fa-anchor text-indigo-500 mr-1"></i> ${thought.reframed}</p>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        // === Inicialización Completa ===
+        window.onload = () => {
+            selectFormStress(5);
+            renderTrendChart();
+            renderDashboardStatus();
+            renderReframedThoughts();
+            loadTestQuestion();
+        };
+    </script>
+</body>
+</html>
